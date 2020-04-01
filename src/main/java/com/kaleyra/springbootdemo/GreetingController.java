@@ -38,6 +38,19 @@ public class GreetingController {
 		}
 
 		return evenArrayList;
-
 	}
+
+	//TODO add user POST /users
+	@PostMapping("/users")
+	public void addUser(@RequestBody User user) {
+
+		if(user.name == null || user.name.isEmpty())
+			throw new IllegalArgumentException("Name is required");
+
+		if(user.email == null || user.email.isEmpty())
+			throw new IllegalArgumentException("Email is required");
+
+		System.out.println("Save user!" + user);
+	}
+
 }
