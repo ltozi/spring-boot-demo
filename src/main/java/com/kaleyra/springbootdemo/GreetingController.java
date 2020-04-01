@@ -1,9 +1,11 @@
 package com.kaleyra.springbootdemo;
 
+import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -69,6 +71,17 @@ public class GreetingController {
                 "INSERT INTO USERS VALUES (?, ?, ?)", random.nextInt(1_000_000), user.name, user.email);
     }
 
+    /**
+     * Retrieve a user by its id code
+     *
+     * @param id of the user
+     * @return {@link User}
+     */
+    @GetMapping("/users/{id}")
+    public User getUser(@PathVariable long id) {
+        return jdbcTemplate.queryForObject("SELECT * FROM USERS where id=?", User.class, id);
+    }
+
     @PostConstruct
     public void afterClassCreated() {
         jdbcTemplate.execute("DROP TABLE users IF EXISTS");
@@ -80,78 +93,18 @@ public class GreetingController {
 
     @GetMapping("/users")
     public List<User> getUserList() {
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("SELECT * FROM USERS");
+
         ArrayList<User> users = new ArrayList<>();
-
-        User u1 = new User();
-        u1.setName("Luigi");
-        u1.setEmail("lt@kaleyra.com");
-
-        User u2 = new User();
-        u2.setName("Daniele");
-        u2.setEmail("lt@kaleyra.com");
-
-        User u3 = new User();
-        u3.setName("vinitha");
-        u3.setEmail("lt@kaleyra.com");
-
-        users.add(u1);
-        users.add(u2);
-        users.add(u3);
+        for (Map<String, Object> map : maps) {
+            User user = new User();
+            user.setId( Long.parseLong(map.get("id").toString()));
+            user.setName((String) map.get("name"));
+            user.setEmail((String) map.get("email"));
+            users.add(user);
+        }
 
         return users;
     }
 
-    @GetMapping("/patients")
-    public List<Patient> getpatients() {
-        ArrayList<Patient> patients = new ArrayList<>();
-
-        Patient u1 = new Patient();
-        u1.setName("Luigi");
-        u1.setEmail("lt@kaleyra.com");
-        u1.setHospital("Appolo Hospital");
-
-        Patient u2 = new Patient();
-        u2.setName("Daniele");
-        u2.setEmail("lt@kaleyra.com");
-        u2.setHospital("Lombardia Hospital");
-
-        Patient u3 = new Patient();
-        u3.setName("vinitha");
-        u3.setEmail("lt@kaleyra.com");
-        u3.setHospital("Milan HQ Hospital");
-
-        patients.add(u1);
-        patients.add(u2);
-        patients.add(u3);
-
-        return patients;
-    }
-
-
-    @GetMapping("/Hospitals")
-    public List<Hospital> getHospitals() {
-        ArrayList<Hospital> Hospitals = new ArrayList<>();
-
-        Hospital u1 = new Hospital();
-        u1.setName("john");
-        u1.setSpeciality("cardiologist");
-        u1.setHospitaladdress("Appolo Hospital,street-22");
-
-        Hospital u2 = new Hospital();
-        u2.setName("mike");
-        u2.setSpeciality("physician");
-        u2.setHospitaladdress("Lombardia Hospital,via stafano 11");
-
-        Hospital u3 = new Hospital();
-        u3.setName("vinitha");
-        u3.setSpeciality("dermatologist,");
-        u3.setHospitaladdress("Milan HQ Hospital,via isimbardi 24");
-
-        Hospitals.add(u1);
-        Hospitals.add(u2);
-        Hospitals.add(u3);
-
-        return Hospitals;
-    }
 }
-
