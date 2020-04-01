@@ -32,7 +32,7 @@ public class GreetingController {
 
 		ArrayList<Integer> evenArrayList = new ArrayList<>();
 
-		for (int i = 1; i <= 10; i++) {
+		for (int i = min; i <= max; i++) {
 			if(i % 2 == 0)
 				evenArrayList.add(i);
 		}
