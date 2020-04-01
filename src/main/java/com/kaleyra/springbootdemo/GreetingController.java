@@ -112,16 +112,19 @@ public class GreetingController {
         ArrayList<Patient> patients = new ArrayList<>();
 
         Patient u1 = new Patient();
+        u1.setPatientId(1);
         u1.setName("Luigi");
         u1.setEmail("lt@kaleyra.com");
         u1.setHospital("Appolo Hospital");
 
         Patient u2 = new Patient();
+        u2.setPatientId(2);
         u2.setName("Daniele");
         u2.setEmail("lt@kaleyra.com");
         u2.setHospital("Lombardia Hospital");
 
         Patient u3 = new Patient();
+        u3.setPatientId(3);
         u3.setName("vinitha");
         u3.setEmail("lt@kaleyra.com");
         u3.setHospital("Milan HQ Hospital");
@@ -158,5 +161,10 @@ public class GreetingController {
         Hospitals.add(u3);
 
         return Hospitals;
+    }
+
+    @GetMapping("/patients/{patientId}")
+    public Patient getPatient(@PathVariable long patientId) {
+        return jdbcTemplate.queryForObject("SELECT * FROM patients where patientId=?", Patient.class, patientId);
     }
 }

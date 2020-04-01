@@ -2,7 +2,15 @@ package com.kaleyra.springbootdemo;
 
 public class Patient {
 
-    private long id;
+    public long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(long patientId) {
+        this.patientId = patientId;
+    }
+
+    private long patientId;
 
     String name;
     String email;
@@ -32,18 +40,12 @@ public class Patient {
         this.email = email;
     }
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
     @Override
     public String toString() {
         return "Patient{" +
-                "id=" + id +
+                "id=" + patientId +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", hospital='" + hospital + '\'' +
