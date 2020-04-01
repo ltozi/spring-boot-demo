@@ -2,6 +2,8 @@ package com.kaleyra.springbootdemo;
 
 public class User {
 
+    private long id;
+
     String name;
     String email;
 
@@ -21,10 +23,19 @@ public class User {
         this.email = email;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }

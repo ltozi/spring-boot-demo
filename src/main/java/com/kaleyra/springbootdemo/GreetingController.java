@@ -1,16 +1,28 @@
 package com.kaleyra.springbootdemo;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
 
 @RestController
 public class GreetingController {
 
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     /**
      * GET /greeting
@@ -41,9 +53,9 @@ public class GreetingController {
         return evenArrayList;
     }
 
-    //TODO add user POST /users
     @PostMapping("/users")
     public void addUser(@RequestBody User user) {
+
 
         if (user.name == null || user.name.isEmpty())
             throw new IllegalArgumentException("Name is required");
@@ -51,7 +63,18 @@ public class GreetingController {
         if (user.email == null || user.email.isEmpty())
             throw new IllegalArgumentException("Email is required");
 
-        System.out.println("Save user!" + user);
+
+        Random random = new Random();
+        jdbcTemplate.update(
+                "INSERT INTO USERS VALUES (?, ?, ?)", random.nextInt(1_000_000), user.name, user.email);
+    }
+
+    @PostConstruct
+    public void afterClassCreated() {
+        jdbcTemplate.execute("DROP TABLE users IF EXISTS");
+        jdbcTemplate.execute("CREATE TABLE users(id SERIAL, name VARCHAR(255), email VARCHAR(255))");
+
+        System.out.println("Table users exists");
     }
 
 
