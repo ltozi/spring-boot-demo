@@ -4,8 +4,8 @@ public class User {
 
     private long id;
 
-    String name;
-    String email;
+    private String name;
+    private String email;
 
     public String getName() {
         return name;

@@ -1,21 +1,16 @@
 package com.kaleyra.springbootdemo;
 
-import java.sql.Array;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.PostConstruct;
 
 @RestController
 public class GreetingController {
@@ -59,16 +54,16 @@ public class GreetingController {
     public void addUser(@RequestBody User user) {
 
 
-        if (user.name == null || user.name.isEmpty())
+        if (user.getName() == null || user.getName().isEmpty())
             throw new IllegalArgumentException("Name is required");
 
-        if (user.email == null || user.email.isEmpty())
+        if (user.getEmail() == null || user.getEmail().isEmpty())
             throw new IllegalArgumentException("Email is required");
 
 
         Random random = new Random();
         jdbcTemplate.update(
-                "INSERT INTO USERS VALUES (?, ?, ?)", random.nextInt(1_000_000), user.name, user.email);
+                "INSERT INTO USERS VALUES (?, ?, ?)", random.nextInt(1_000_000), user.getName(), user.getEmail());
     }
 
     /**
@@ -79,7 +74,9 @@ public class GreetingController {
      */
     @GetMapping("/users/{id}")
     public User getUser(@PathVariable long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM USERS where id=?", User.class, id);
+
+        return jdbcTemplate.queryForObject("SELECT * FROM USERS where id=?",
+                BeanPropertyRowMapper.newInstance(User.class), id);
     }
 
     @PostConstruct
