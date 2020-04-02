@@ -88,12 +88,23 @@ public class GreetingController {
     }
 
 
+    /**
+     * /users?param=value  (get all users with name containing "like '%string%'")
+     *
+     * @return
+     */
     @GetMapping("/users")
-    public List<User> getUserList() {
-        List<Map<String, Object>> maps = jdbcTemplate.queryForList("SELECT * FROM USERS");
+    public List<User> getUserList(@RequestParam(value = "name", defaultValue = "") String name) {
+
+        String sqlAll = "SELECT * FROM USERS";
+        List<Map<String, Object>> result  = null;
+        if(name.isEmpty())
+            result = jdbcTemplate.queryForList(sqlAll);
+        else
+            result = jdbcTemplate.queryForList(sqlAll + " WHERE name = ?", name);
 
         ArrayList<User> users = new ArrayList<>();
-        for (Map<String, Object> map : maps) {
+        for (Map<String, Object> map : result) {
             User user = new User();
             user.setId( Long.parseLong(map.get("id").toString()));
             user.setName((String) map.get("name"));
