@@ -4,6 +4,7 @@ import com.kaleyra.springbootdemo.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,10 +42,8 @@ public class GreetingController {
 
 
     @GetMapping("/even")
-    public ArrayList<Integer> even(@RequestParam(value = "min", defaultValue = "0") Integer min,
+    public ListResponsePayload<Integer> even(@RequestParam(value = "min", defaultValue = "0") Integer min,
                                    @RequestParam(value = "max", defaultValue = "10") Integer max) {
-        //TODO your imagination
-
         ArrayList<Integer> evenArrayList = new ArrayList<>();
 
         for (int i = min; i <= max; i++) {
@@ -52,13 +51,16 @@ public class GreetingController {
                 evenArrayList.add(i);
         }
 
-        return evenArrayList;
+        ListResponsePayload<Integer> payload = new ListResponsePayload<>();
+        payload.payload = evenArrayList;
+        payload.payloadSize = evenArrayList.size();
+
+        return payload;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/users")
     public void addUser(@RequestBody User user) {
-
-
         if (user.getName() == null || user.getName().isEmpty())
             throw new IllegalArgumentException("Name is required");
 
@@ -111,8 +113,8 @@ public class GreetingController {
      *
      * @return
      */
-    @GetMapping("/users")
-    public List<User> getUserList(@RequestParam(value = "name", defaultValue = "") String name) {
+    @GetMapping(value = "/users", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ListResponsePayload<User> getUserList(@RequestParam(value = "name", defaultValue = "") String name) {
 
         String sqlAll = "SELECT * FROM USERS";
         List<Map<String, Object>> result  = null;
@@ -130,7 +132,11 @@ public class GreetingController {
             users.add(user);
         }
 
-        return users;
+        ListResponsePayload<User> payload = new ListResponsePayload<>();
+        payload.payload = users;
+        payload.payloadSize = users.size();
+
+        return payload;
     }
 
 }
