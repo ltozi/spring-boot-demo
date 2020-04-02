@@ -12,12 +12,7 @@ class UserNotFoundAdvice {
   @ResponseBody
   @ExceptionHandler(UserNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
-  ErrorPayload userNotFoundHandler(UserNotFoundException ex) {
-
-    ErrorPayload errorPayload = new ErrorPayload();
-    errorPayload.message = ex.getMessage();
-    errorPayload.cause = ex.getCause() != null ? ex.getCause().getMessage() : "";
-
-    return errorPayload;
+    String userNotFoundHandler(UserNotFoundException ex) {
+        return ex.getMessage();
   }
 }
