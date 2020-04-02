@@ -63,7 +63,7 @@ public class GreetingController {
 
         Random random = new Random();
         jdbcTemplate.update(
-                "INSERT INTO USERS VALUES (?, ?, ?)", random.nextInt(1_000_000), user.getName(), user.getEmail());
+                "INSERT INTO USERS VALUES (?, ?, ?)", counter.getAndIncrement(), user.getName(), user.getEmail());
     }
 
     /**
