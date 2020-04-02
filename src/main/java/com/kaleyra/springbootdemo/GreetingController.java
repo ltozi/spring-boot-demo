@@ -2,14 +2,10 @@ package com.kaleyra.springbootdemo;
 
 import com.kaleyra.springbootdemo.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -113,7 +109,7 @@ public class GreetingController {
      *
      * @return
      */
-    @GetMapping(value = "/users", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/users")
     public ListResponsePayload<User> getUserList(@RequestParam(value = "name", defaultValue = "") String name) {
 
         String sqlAll = "SELECT * FROM USERS";
