@@ -1,9 +1,14 @@
 package com.kaleyra.springbootdemo;
 
+import com.kaleyra.springbootdemo.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -64,6 +69,19 @@ public class GreetingController {
         Random random = new Random();
         jdbcTemplate.update(
                 "INSERT INTO USERS VALUES (?, ?, ?)", counter.getAndIncrement(), user.getName(), user.getEmail());
+    }
+
+
+    /**
+     * Remove an user
+     *
+     * @param id
+     */
+    @DeleteMapping("/users/{id}")
+    public void removeUser(@PathVariable Long id) {
+        int update = jdbcTemplate.update("DELETE FROM USERS WHERE id = ?", id);
+        if(update == 0)
+            throw new UserNotFoundException(id);
     }
 
     /**
