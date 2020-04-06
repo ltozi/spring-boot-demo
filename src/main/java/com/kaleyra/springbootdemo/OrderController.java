@@ -1,11 +1,9 @@
 package com.kaleyra.springbootdemo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -67,4 +65,33 @@ public class OrderController {
     }
 
 
+    @PostMapping("/pets")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addPet(@RequestBody Pet pet) throws URISyntaxException {
+        //POST https://petstore.swagger.io/v2/pet
+//        {
+//            "id": 0,
+//                "category": {
+//            "id": 0,
+//                    "name": "string"
+//        },
+//            "name": "doggie",
+//                "photoUrls": [
+//            "string"
+//         ],
+//            "tags": [
+//            {
+//                "id": 0,
+//                    "name": "string"
+//            }
+//         ],
+//            "status": "available"
+//        }
+
+        ResponseEntity<Pet> petResponseEntity = restTemplate.postForEntity(
+                new URI("http://" + HOSTNAME_PORT + "/v2/pet"), pet, Pet.class);
+
+        System.out.println(petResponseEntity);
+
+    }
 }
